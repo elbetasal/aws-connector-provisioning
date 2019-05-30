@@ -1,4 +1,4 @@
-variable "key_name" {}
+// variable "key_name" {}
 
 provider "aws" {
   access_key = "AKIAZNSHZAOX267AXRU3"
@@ -6,25 +6,13 @@ provider "aws" {
   region     = "us-east-1"
 }
 
-resource "tls_private_key" "example" {
-    algorithm ="RSA"
-    rsa_bits= 4096
-}
-
-resource "aws_key_pair" "generated_key" {
-    key_name ="${var.key_name}"
-    public_key ="${tls_private_key.example.public_key_openssh}"
-}
-
 resource "aws_instance" "example" {
-  ami           = "ami-b374d5a5"
+  ami           = "ami-024a64a6685d05041"
   instance_type = "t2.micro"
-  key_name = "${aws_key_pair.generated_key.key_name}"
+  // key_name = "${var.key_name}"
+  key_name = "pleymo-laptop"
+  user_data = "${file("init.conf")}"
 }
 output "ip" {
 value = "${aws_instance.example.public_ip}"
-}
-
-output "key" {
-    value ="${aws_key_pair.generated_key.public_key}"
 }
