@@ -1,18 +1,22 @@
-// variable "key_name" {}
+variable "key_name" {}
 
 provider "aws" {
-  access_key = "AKIAZNSHZAOX267AXRU3"
-  secret_key = "+lk0txXGrk+rkt+2YF/CKIPeR2V1UmOoLoN3BrDO"
+  access_key = "{}"
+  secret_key = "{}"
   region     = "us-east-1"
 }
 
 resource "aws_instance" "example" {
   ami           = "ami-024a64a6685d05041"
   instance_type = "t2.micro"
-  // key_name = "${var.key_name}"
-  key_name = "pleymo-laptop"
+  key_name = "${var.key_name}"
   user_data = "${file("init.conf")}"
+  provisioner "file" {
+      source      = "jsd-awsc-addon.tar.gz"
+      destination = "/app/jsd-awsc-addon.tar.gz"
+  }
 }
+
 output "ip" {
 value = "${aws_instance.example.public_ip}"
 }
